@@ -1,0 +1,706 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Petz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            color: #333;
+            font-size: 20px;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1 {
+            font-size: 170%;
+        }
+
+        .instructions ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .custom-header {
+            margin-bottom: 40px;
+            padding: 5px;
+        }
+
+        .instructions {
+            margin-top: 40px;
+        }
+
+        .center-content-flex {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #custom-upload-button {
+            font-size: xx-large;
+            font-weight: bold;
+            background-color: #2f2fa2;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            cursor: pointer
+        }
+
+        .next-instructions {
+            color: #777;
+        }
+
+        #custom-upload-button:hover {
+            background-color: #272788;
+        }
+
+        #custom-upload-button:focus {
+            background-color: #272788;
+        }
+
+        .image-upload-container .progress {
+            font-weight: bold;
+        }
+
+        #images-div img {
+            width: 85px;
+            max-height: 110px;
+        }
+
+        .image-upload-container {
+            font-size: 85%;
+        }
+
+        .instructions #errors {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #images-div > div {
+            margin-bottom: 5px;
+        }
+
+        .image-upload-container {
+            border-radius: 5px;
+            padding: 7px;
+        }
+
+            .image-upload-container .row > div {
+                margin: auto;
+            }
+
+            .image-upload-container p {
+                margin: 2px;
+            }
+
+        .container-custom-warning {
+            border: solid 1px #ffc107;
+        }
+
+        .container-custom-danger {
+            border: solid 1px #dc3545;
+        }
+
+        .container-custom-success {
+            border: solid 1px #28a745;
+        }
+
+        #images-div > div img {
+            border-radius: 5px;
+        }
+
+        .no-padding {
+            padding: 0;
+        }
+
+        .no-row-margin {
+            margin: 0 auto;
+        }
+
+        .modal-footer {
+            padding: 0.5rem;
+        }
+
+        @media only screen and (max-width: 480px) {
+
+            h1 {
+                font-size: 130%;
+            }
+
+            h2 {
+                font-size: 100%;
+            }
+
+            .instructions {
+                font-size: 85%;
+            }
+
+            #images-div img {
+                width: 100%;
+                max-height: 90px;
+            }
+
+            #custom-upload-button {
+                font-size: 125%;
+            }
+
+            .modal-title {
+                font-size: 100%;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: .3rem;
+            }
+
+                .modal-footer button {
+                    font-size: 70%;
+                }
+
+            .image-upload-container {
+                font-size: 63%;
+            }
+        }
+
+
+        @media only screen and (max-width: 320px) {
+
+            h1 {
+                font-size: 100%;
+            }
+
+            h2 {
+                font-size: 90%;
+            }
+
+            .instructions {
+                font-size: 75%;
+            }
+
+            #custom-upload-button {
+                font-size: 95%;
+            }
+
+            .modal-header {
+                padding: 10px;
+            }
+
+            .modal-body {
+                padding: 7px;
+            }
+
+            .modal-footer {
+                padding: 5px;
+            }
+
+            .modal-title {
+                font-size: 80%;
+            }
+
+            .modal-footer button {
+                font-size: 70%;
+            }
+
+            #images-div {
+                padding: 10px;
+            }
+
+                #images-div img {
+                    max-height: 85px;
+                }
+
+            .image-upload-container {
+                font-size: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-content" class="center-content-flex">
+        <div>
+            <div class="custom-header text-center">
+                <h1>Envie as imagens do seu Pet</h1>
+            </div>
+            <div class="center-content-flex">
+                <input id="input-files" hidden="true" type="file" multiple="" name="files" accept="image/*" />
+                <button id="custom-upload-button">Enviar Imagens</button>
+            </div>
+            <div class="p-2 instructions">
+                <ul class="text-muted">
+                    <li>Selecione até 4 imagens</li>
+                    <li>Não é permitido conteúdo impróprio</li>
+                    <li>As imagens não podem conter logomarcas</li>
+                    <li>As imagens não podem conter pessoas</li>
+                </ul>
+
+                <div id='errors' class="text-danger"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title text-center">Enviando Imagens</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div id="images-div" class="modal-body"></div>
+
+                <div class="modal-footer text-center">
+                    <button id="close-modal-button" type="button" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+
+    <script>
+
+        let uploadButton = document.getElementById('custom-upload-button')
+        let inputFiles = document.getElementById('input-files')
+        let closeModalButton = document.getElementById('close-modal-button')
+
+        const STRINGS_DICTIONARTY = {
+            invalid_image: 'Imagem Inválida',
+            no_pet_error: 'Não há Pets na imagem',
+            logo_in_image_error: 'Existe uma logomarca na imagem',
+            people_in_image_error: 'A imagem contém pessoas',
+            no_safe_content_image_error: 'O conteúdo da imagem é impróprio',
+            success_upload: 'Imagem salva com sucesso!',
+            analysing_image: 'Analisando a imagem...',
+            select_new_image_instructions: 'Clique na imagem para escolher uma nova',
+            select_four_images_error: 'Você precisa selecionar 4 imagens!',
+            select_more_than_four_images_error: 'Você só pode selecionar 4 imagens!',
+            ok_btn_txt: 'OK',
+            thanks_message: 'Obrigado!',
+            continue_on_totem_message: 'Continue o procedimento no totem.',
+        }
+
+        uploadButton.addEventListener('click', () => inputFiles.click())
+
+        let res = new URLSearchParams(window.location.search).get('TotemID')
+        const TOTEM_ID = parseInt(res) > 0 ? parseInt(res) : 1
+
+        console.log('totem id', TOTEM_ID)
+
+        class ImageUploader {
+            constructor(id, callbackFunction) {
+                this.id = id
+                this.callback = callbackFunction
+            }
+
+            upload(data) {
+                let self = this
+                $.ajax({
+                    type: 'post',
+                    url: 'https://mtaqbp28md.execute-api.sa-east-1.amazonaws.com/default/poc_petz_analyze',
+                    data: data,
+                    success: (responseData) => {
+                        self.callback(self.id, responseData)
+                    },
+                    error: (xhr, status, error) => {
+                        console.log((xhr.responseText))
+                    }
+                })
+            }
+        }
+
+        class UploadController {
+
+            constructor() {
+                this.MAX_WIDTH = 700
+                this.MAX_HEIGHT = 700
+                this._isUploading = false
+                this.IMAGE_ID_PREFIX = "div-img-"
+                this.imagesLoaded = []
+                this.imageUploaders = []
+            }
+
+            reset() {
+                this.imagesLoaded = []
+                this.files = []
+                this.imageUploaders = []
+                this.cleanImagesDivContainer()
+            }
+
+            cleanImagesDivContainer() {
+                $('#images-div').empty()
+            }
+
+            setFiles(files) {
+                this.files = files
+            }
+
+            initilize() {
+                this.resetModal()
+                this.prepareImageFiles(this.files)
+            }
+
+            prepareImageFiles(files) {
+                let readImagePromises = []
+
+                files.map((file) => {
+                    readImagePromises.push(this.readImageFile(file))
+                })
+
+                Promise.all(readImagePromises).then((imageSources) => {
+                    this.loadImageFiles(imageSources)
+                })
+            }
+
+            loadImageFiles(imageSources) {
+                let loadImagePromises = []
+                imageSources.map((src, i) => {
+                    loadImagePromises.push(this.loadImage(src, i))
+                })
+
+                Promise.all(loadImagePromises).then((images) => {
+                    console.log('loaded images:', images)
+
+                    images.map((image) => {
+                        this.imagesLoaded[image.id] = image
+                    })
+
+
+                    this.updateImageStatusView()
+                    this.showModal()
+
+                    this.imagesLoaded.map((image) => {
+                        if (!image.isUploaded && !image.uploadFailed) {
+                            this.startImageUpload(image)
+                        }
+                    })
+
+                })
+            }
+
+            displayModalOkButton() {
+                self = this
+
+                if ($('#ok-modal-button').length != 0) return
+
+                $('#close-modal-button').hide()
+                $('.modal-footer').append(`
+                        <button id="ok-modal-button" type="button" class="btn btn-success"
+                        data-dismiss="modal">${STRINGS_DICTIONARTY.ok_btn_txt}</button>
+                    `)
+
+                $('#ok-modal-button').click(() => {
+                    inputFiles.value = ""
+                    self.reset()
+                    self.displayDoneMessage()
+                })
+
+            }
+
+            displayDoneMessage() {
+                $('#main-content').empty()
+                $('#main-content').append(`
+                      <div class="text-center">
+                        <h1>${STRINGS_DICTIONARTY.thanks_message}</h1>
+                        <h2 class="next-instructions"">${STRINGS_DICTIONARTY.continue_on_totem_message}</h2>
+                      </div>
+                    `)
+            }
+
+            startImageUpload(image) {
+
+                console.log('startImageUpload for image:', image.id)
+
+                let data = {
+                    "TotemID": TOTEM_ID,
+                    "NumeroImagem": parseInt(image.id) + 1, //adding 1 to image id it starts at 0
+                    "ImagemBase64": image.src.substring(image.src.indexOf(',') + 1, image.src.length)
+                }
+
+                data = JSON.stringify(data)
+
+                let imageUploader = new ImageUploader(image.id, (id, resp) => {
+                    console.log('callback response:', id)
+
+                    if (resp.Sucesso) {
+                        this.imagesLoaded[id].isUploaded = true
+                        this.displaySucessContainer(id, resp)
+
+                        if (this.isAllImageUploaded()) {
+                            this.displayModalOkButton()
+                        }
+
+                    } else {
+                        this.imagesLoaded[id].uploadFailed = true
+                        this.displayErrorContainer(id, resp)
+                        this.enableNewImageSelect(id)
+                    }
+                })
+
+                this.imageUploaders[image.id] = imageUploader
+                imageUploader.upload(data)
+            }
+
+            enableNewImageSelect(id) {
+
+                console.log('enableNewImageSelect id:', id)
+                $(`#details-${id}`).append(`<input id="input-new-image-${id}" hidden="true" type="file" name="file" accept="image/*">`)
+
+                $(`#${id} img`).click(() => {
+                    $(`#${id} img`).off()
+                    $(`#input-new-image-${id}`).trigger('click')
+                })
+
+                $(`#input-new-image-${id}`).click((e) => {
+                    e.stopPropagation()
+                    e.stopImmediatePropagation()
+                })
+
+                $(`#input-new-image-${id}`).change((e) => {
+                    let file = e.target.files[0]
+                    this.readImageFile(file).then((src) => {
+                        this.loadImage(src, id).then((image) => {
+                            this.imagesLoaded[image.id] = image
+                            this.updateImageStatusView()
+                            this.startImageUpload(image)
+                        })
+                    })
+                    $(`#input-new-image-${id}`).val('')
+                })
+
+            }
+
+            displayAnalysingImageContainer(id) {
+
+                $(`#${id}`).removeClass('container-custom-success');
+                $(`#${id}`).removeClass('container-custom-danger');
+                $(`#${id}`).addClass('container-custom-warning')
+                $(`#details-${id}`).empty()
+                $(`#details-${id}`).append(
+                    `
+                            <div class="spinner-border spinner-border text-warning" role="status"><span class="sr-only">Loading...</span></div>
+                            <p>${STRINGS_DICTIONARTY.analysing_image}</p>
+
+                        `
+                )
+            }
+
+            displayErrorContainer(id, data) {
+
+                $(`#${id}`).removeClass('container-custom-success');
+                $(`#${id}`).removeClass('container-custom-warning');
+                $(`#${id}`).addClass('container-custom-danger')
+                $(`#details-${id}`).empty()
+                $(`#details-${id}`).append(`<p class="text-danger"><b>${data.Descricao}<b></p>`)
+
+
+                if (!data.ContemAnimal) {
+                    $(`#details-${id}`).append(`<p class="text-danger">${STRINGS_DICTIONARTY.no_pet_error}</p>`)
+                }
+
+                if (data.ContemLogomarca) {
+                    $(`#details-${id}`).append(`<p class="text-danger">${STRINGS_DICTIONARTY.logo_in_image_error}</p>`)
+                }
+
+                if (!data.ConteudoSeguro) {
+                    $(`#details-${id}`).append(`<p class="text-danger">${STRINGS_DICTIONARTY.no_safe_content_image_error}</p>`)
+                }
+
+                if (data.ContemPessoa) {
+                    $(`#details-${id}`).append(`<p class="text-danger">${STRINGS_DICTIONARTY.people_in_image_error}</p>`)
+                }
+
+                $(`#details-${id}`).append(`<p class="text-danger"><i><small>${STRINGS_DICTIONARTY.select_new_image_instructions}</small><i></p>`)
+
+            }
+
+            displaySucessContainer(id, data) {
+                $(`#${id}`).removeClass('container-custom-warning');
+                $(`#${id}`).removeClass('container-custom-danger');
+                $(`#${id}`).addClass('container-custom-success')
+                $(`#details-${id}`).empty()
+                $(`#details-${id}`).append(`<p class="text-success"><b>${STRINGS_DICTIONARTY.success_upload}<b></p>`)
+            }
+
+            resetModal() {
+                console.log('uploadController - reset called')
+                $('#my-modal').modal({ show: 'false' });
+            }
+
+            showModal() {
+                console.log('uploadController - showModal called')
+
+                if ($('#myModal').is(':visible')) return
+
+                $('#myModal').modal({ backdrop: 'static', keyboard: false })
+                $('#myModal').modal('show')
+            }
+
+            loadImage(src, id) {
+                let self = this
+                return new Promise((resolve, reject) => {
+                    let image = new Image()
+
+                    let imagesPromisses
+
+                    image.onload = function () {
+                        console.log('loadImage - image id:', id)
+                        this.id = id
+                        this.isUploaded = false
+                        this.uploadFailed = false
+                        this.divId = self.IMAGE_ID_PREFIX + id
+                        let resizedImage = self.resizeImage(this)
+                        resolve(resizedImage)
+                    }
+
+                    image.onerror = function () {
+                        reject(new Error('error to load image'))
+                    }
+
+                    image.src = src
+                })
+            }
+
+            readImageFile(file) {
+                return new Promise((resolve, reject) => {
+                    let filereader = new FileReader()
+
+                    filereader.onload = function (e) {
+                        let imageSrc = e.target.result
+                        resolve(imageSrc)
+                    }
+
+                    filereader.onerror = function () {
+                        reject(new Error('error to read file'))
+                    }
+
+                    filereader.readAsDataURL(file)
+                })
+            }
+
+            isAllImageUploaded() {
+                let resp = true
+                this.imagesLoaded.forEach((image) => {
+                    if (!image.isUploaded) {
+                        resp = false
+                    }
+                })
+
+                return resp
+            }
+
+
+            //TODO: refactore to receive image in parameter
+            updateImageStatusView() {
+                console.log('uploadController - updateImageStatusView called')
+                this.imagesLoaded.map((image, i) => {
+                    if ($(`#${image.id}`).length === 0) {
+                        $('#images-div').append(`<div class='col-md-12 align-items-center image-upload-container container-custom-warning' id='${image.id}'></div>`)
+                        $('#' + image.id).append(`<div id='content-${image.id}' class="row no-row-margin"></div>`)
+                        $('#' + image.id + ' > div').append(`<div class="col-md-3 col-sm-3 col-3 no-padding"><img/></div>`)
+                        $('#' + image.id + ' > div').append(`<div id='details-${image.id}' class="col-md-9 col-sm-9 col-9 text-center"></div>`)
+                    }
+
+                    if (!image.isUploaded && !image.uploadFailed) {
+                        $(`#${image.id} img`).attr('src', `${image.src}`)
+                        this.displayAnalysingImageContainer(image.id)
+                    }
+
+                })
+            }
+
+            resizeImage(image) {
+                console.log('ImageResizer - resizeImage called')
+                if (this.MAX_HEIGHT > image.height && this.MAX_WIDTH > image.width) {
+                    return image
+                }
+
+                const canvas = document.createElement('canvas')
+
+                let width = image.width;
+                let height = image.height;
+
+                if (width > height) {
+                    if (width > this.MAX_WIDTH) {
+                        height *= this.MAX_WIDTH / width;
+                        width = this.MAX_WIDTH;
+                    }
+                } else {
+                    if (height > this.MAX_HEIGHT) {
+                        width *= this.MAX_HEIGHT / height;
+                        height = this.MAX_HEIGHT;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, width, height)
+
+                const dataUrl = canvas.toDataURL()
+
+                let resizedImage = new Image()
+                resizedImage.src = dataUrl
+                resizedImage.id = image.id
+                resizedImage.divId = image.divId
+                resizedImage.isUploaded = image.isUploaded
+                resizedImage.uploadFailed = image.uploadFailed
+
+                return resizedImage
+            }
+        }
+
+        let controller = new UploadController()
+
+        closeModalButton.addEventListener('click', () => {
+            inputFiles.value = ""
+            controller.reset()
+        })
+
+        inputFiles.addEventListener('change', () => {
+            console.log('inputFiles change event called')
+            let files = Array.from(inputFiles.files)
+
+            $(".instructions #errors").empty()
+
+            if (files.length > 4) {
+                $(".instructions #errors").append(`<p><b>${STRINGS_DICTIONARTY.select_more_than_four_images_error}</b></p>`)
+            } else {
+                controller.setFiles(files)
+                controller.initilize()
+            }
+        })
+
+
+    </script>
+
+</body>
+
+</html>
