@@ -19,7 +19,7 @@ A página de upload é visitada pelo usuário ao ler o QR code presente no totem
 Cada totem terá seu identificador único, que será especificado através de uma querystring na URL.
 
 #### Exemplo - ID do Totem = 1
-https://r37fjpy8x0.execute-api.sa-east-1.amazonaws.com/pagina_upload?TotemID=1
+https://storage.googleapis.com/poc-cartoes-petz-id-visual/index.html
 
 ## 2 - Analisar Imagens
 ```
