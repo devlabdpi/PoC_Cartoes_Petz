@@ -11,7 +11,7 @@ PoC de emissão de cartões personalizados utilizando análise de imagem (Google
 
 ## 1 - Página de Upload
 ```
-GET https://r37fjpy8x0.execute-api.sa-east-1.amazonaws.com/pagina_upload?TotemID=[ID]
+GET https://storage.googleapis.com/poc-cartoes-petz-id-visual/index.html?TotemID=[ID]
 ```
 
 A página de upload é visitada pelo usuário ao ler o QR code presente no totem. Nesta página, é feito o upload de até 4 imagens para um repositório temporário hospedado no Google Cloud Storage. 
